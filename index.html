@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Banjara Bazaar – Seller Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .floating-item {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+  </style>
+</head>
+<body class="bg-yellow-50 min-h-screen flex flex-col justify-between relative overflow-hidden font-sans">
+
+  <!-- Floating Decorations -->
+  <img src="https://cdn-icons-png.flaticon.com/512/3335/3335823.png" alt="Brass Pot" class="floating-item w-12 absolute top-12 left-4 opacity-20">
+  <img src="https://cdn-icons-png.flaticon.com/512/3941/3941588.png" alt="Diya" class="floating-item w-10 absolute bottom-24 right-6 opacity-20">
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 bg-yellow-100 shadow-md z-50">
+    <div class="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+      <h1 class="text-xl font-bold text-yellow-700">🛍 Banjara Bazaar</h1>
+      <a href="#" onclick="scrollToForm()" class="text-sm text-yellow-800 hover:underline">Seller Home</a>
+    </div>
+  </header>
+  <div class="pt-16"></div>
+
+  <!-- Hero Section -->
+  <section class="text-center pt-12 px-6">
+    <div class="inline-flex items-center px-3 py-1.5 rounded-full bg-yellow-200 text-yellow-800 text-sm font-semibold mb-6">
+      🔔 Now Accepting Sellers
+    </div>
+
+    <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+      Sell on <span class="text-yellow-500">Banjara Bazaar</span><br /> Join India’s Most Magical Marketplace
+    </h1>
+
+    <p class="mt-4 text-lg text-gray-700 max-w-xl mx-auto">
+      A zero-commission platform for manufacturers of furniture, décor, lighting, and more. Let your creations shine!
+    </p>
+
+    <button onclick="scrollToForm()" class="mt-8 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-8 rounded-full transition duration-300">
+      Get On Board →
+    </button>
+  </section>
+
+  <!-- Seller Form -->
+  <section id="seller-form" class="pt-24 px-6">
+    <form class="bg-white p-6 rounded-xl shadow-md max-w-xl mx-auto text-left space-y-4">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Seller Registration</h2>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Name</label>
+        <input type="text" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Mobile Number</label>
+        <input type="tel" required pattern="\d{10}" placeholder="10-digit number" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Business Name</label>
+        <input type="text" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">GST Number</label>
+        <input type="text" placeholder="Optional" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500">
+      </div>
+      <button type="submit" class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md font-semibold">
+        ✅ Submit Application
+      </button>
+    </form>
+  </section>
+
+  <!-- Character Visual -->
+  <section class="flex justify-center mt-12 px-6">
+    <img
+      src="https://cdn.pixabay.com/photo/2020/01/06/12/56/grandma-4743804_1280.jpg"
+      alt="Miss Pooja welcoming sellers"
+      class="w-48 h-48 rounded-full shadow-lg object-cover"
+    />
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-12 text-sm mt-12">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div>
+        <h3 class="font-semibold text-white mb-2">Product</h3>
+        <ul>
+          <li><a href="#" class="hover:underline">Features</a></li>
+          <li><a href="#" class="hover:underline">Pricing</a></li>
+          <li><a href="#" class="hover:underline">Marketplace</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-semibold text-white mb-2">Company</h3>
+        <ul>
+          <li><a href="#" class="hover:underline">About Us</a></li>
+          <li><a href="#" class="hover:underline">Blog</a></li>
+          <li><a href="#" class="hover:underline">Careers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-semibold text-white mb-2">Support</h3>
+        <ul>
+          <li><a href="#" class="hover:underline">Help Center</a></li>
+          <li><a href="#" class="hover:underline">Returns</a></li>
+          <li><a href="#" class="hover:underline">Shipping</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-semibold text-white mb-2">Legal</h3>
+        <ul>
+          <li><a href="#" class="hover:underline">Terms</a></li>
+          <li><a href="#" class="hover:underline">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-8 text-xs text-gray-500">© 2025 Banjara Bazaar. Handmade. Honest. Homegrown.</div>
+  </footer>
+
+  <script>
+    function scrollToForm() {
+      const form = document.getElementById("seller-form");
+      if (form) {
+        form.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  </script>
+</body>
+</html>
