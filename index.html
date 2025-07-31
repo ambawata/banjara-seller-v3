@@ -276,6 +276,9 @@
             let currentFeatures = [];
             let currentDescription = [];
             let capturingDescription = false;
+            let currentPrice = null;
+            let currentProductWeight = null;
+            let currentPackageWeight = null;
         
             for (const line of lines) {
                 if (line.startsWith("Title:")) {
@@ -305,6 +308,18 @@
                     details.hsnCode = line.replace("HSN Code:", "").trim();
                     currentKey = 'hsnCode';
                     capturingDescription = false;
+                } else if (line.startsWith("Suggested Selling Price:")) {
+                    const priceMatch = line.match(/₹(\d+)/);
+                    if (priceMatch) details.suggestedSellingPrice = priceMatch[1];
+                    currentKey = 'suggestedPrice';
+                } else if (line.startsWith("Estimated Product Weight:")) {
+                    const weightMatch = line.match(/(\d+\.?\d*)\s*KG/i);
+                    if (weightMatch) details.estimatedProductWeight = weightMatch[1];
+                    currentKey = 'estimatedProductWeight';
+                } else if (line.startsWith("Estimated Package Weight:")) {
+                    const weightMatch = line.match(/(\d+\.?\d*)\s*KG/i);
+                    if (weightMatch) details.estimatedPackageWeight = weightMatch[1];
+                    currentKey = 'estimatedPackageWeight';
                 } else {
                     if (capturingDescription) {
                         currentDescription.push(line);
