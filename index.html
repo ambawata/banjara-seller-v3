@@ -68,7 +68,7 @@
                                 <div><img src="https://i.imgur.com/uTyA1u3.png" class="w-20 h-20 rounded border-2 border-red-400"><span class="font-semibold text-red-600">✗ Incorrect</span></div>
                             </div>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="image-upload-slots"></div>
-                            <input id="file-upload-wizard" type="file" class="hidden" accept="image/*" multiple>
+                            <input id="file-upload-wizard" type="file" class="hidden" accept="image/*" multiple capture="environment">
                             <p id="wizard-upload-status" class="text-center text-sm font-semibold mt-4 h-5 text-red-600"></p>
                             <div class="mt-8 pt-6 border-t flex justify-end"><button id="wizard-step1-next" class="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-5 rounded-lg shadow disabled:bg-gray-300" disabled>Next →</button></div>
                         </div>
@@ -122,9 +122,9 @@
                              <h2 class="text-3xl font-bold text-center mb-2">Pricing & Policies</h2><p class="text-center text-gray-600 mb-8">Set your price, stock, and policies.</p>
                              <form id="pricingForm" class="space-y-6">
                                 <div class="border p-4 rounded-lg bg-yellow-50">
-                                    <h3 class="font-semibold text-lg mb-4">Individual Pricing *</h3>
+                                    <h3 class="font-semibold text-lg mb-4">Individual Pricing <span class="text-red-500">*</span></h3>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                                        <div><label class="font-medium" for="mrp">MRP (₹)</label><input type="number" id="mrp" class="form-input mt-1" placeholder="e.g., 2999"></div>
+                                        <div><label class="font-medium" for="mrp">MRP (₹) <span class="text-red-500">*</span></label><input type="number" id="mrp" required class="form-input mt-1" placeholder="e.g., 2999"></div>
                                         <div><label class="font-medium" for="sellingPrice">Your Selling Price (₹) <span class="text-red-500">*</span></label><input type="number" id="sellingPrice" required class="form-input mt-1" placeholder="e.g., 1499"></div>
                                     </div>
                                     <div class="mrp-example mt-2" id="mrp-example-text"></div>
@@ -154,7 +154,7 @@
                                     </div>
                                 </details>
                                 <details id="inventory-details" class="space-y-4" open>
-                                    <summary>Inventory & Policies *<span class="arrow">▼</span></summary>
+                                    <summary>Inventory & Policies <span class="text-red-500">*</span></summary>
                                     <div class="details-content space-y-4">
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div><label class="font-medium" for="product-weight">Product Weight (in KG) <span class="text-red-500">*</span></label><input type="text" id="product-weight" required class="form-input mt-1" placeholder="e.g., 1.6"></div>
@@ -176,7 +176,8 @@
                                                 <div class="mt-1 flex justify-end">
                                                     <select id="package-dimensions-unit" class="form-input w-20 bg-white">
                                                         <option>cm</option>
-                                                        <option>inch</option> </select>
+                                                        <option>inch</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div>
@@ -219,11 +220,11 @@
                                 <div class="review-section"><h3 class="text-lg font-semibold border-b pb-2 mb-3">Product Details</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                                     <div><span class="review-label">Title:</span> <span id="review-title" class="review-value"></span></div>
                                     <div><span class="review-label">Category:</span> <span id="review-category" class="review-value"></span></div>
+                                    <div><span class="review-label">Description:</span> <span id="review-description" class="review-value"></span></div>
                                     <div><span class="review-label">Material:</span> <span id="review-material" class="review-value"></span></div>
                                     <div><span class="review-label">Color:</span> <span id="review-color" class="review-value"></span></div>
                                     <div><span class="review-label">HSN Code:</span> <span id="review-hsn-code" class="review-value"></span></div>
                                     <div><span class="review-label">Size Variants:</span> <span id="review-size-variants" class="review-value"></span></div>
-                                    <div><span class="review-label">Description:</span> <span id="review-description" class="review-value"></span></div>
                                 </div><div class="mt-2"><span class="review-label">Keywords:</span> <span id="review-keywords" class="review-value text-sm"></span></div><div class="mt-2"><span class="review-label">Key Features:</span><ul id="review-features" class="list-disc list-inside review-value text-sm"></ul></div></div>
                                 <div class="review-section"><h3 class="text-lg font-semibold border-b pb-2 mb-3">Pricing & Policies</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                                     <div><span class="review-label">MRP:</span> <span id="review-mrp" class="review-value"></span></div>
@@ -267,48 +268,65 @@
             confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
         }
 
-        // Ye function backend se aayi listing text ko parse karega
         function parseListingText(text) {
             const details = {};
             const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-
-            let currentFeatureBuffer = [];
-            let inFeaturesSection = false;
-
+        
+            let currentKey = '';
+            let currentFeatures = [];
+            let currentDescription = [];
+            let capturingDescription = false;
+        
             for (const line of lines) {
                 if (line.startsWith("Title:")) {
                     details.title = line.replace("Title:", "").trim();
-                    inFeaturesSection = false;
-                } else if (line.startsWith("Description:")) { // Naya field yahan parse ho raha hai
+                    currentKey = 'title';
+                    capturingDescription = false;
+                } else if (line.startsWith("Description:")) {
                     details.description = line.replace("Description:", "").trim();
-                    inFeaturesSection = false;
+                    currentKey = 'description';
+                    capturingDescription = true; // Description capturing starts here
                 } else if (line.startsWith("Material:")) {
                     details.material = line.replace("Material:", "").trim();
-                    inFeaturesSection = false;
+                    currentKey = 'material';
+                    capturingDescription = false;
                 } else if (line.startsWith("Color:")) {
                     details.color = line.replace("Color:", "").trim();
-                    inFeaturesSection = false;
+                    currentKey = 'color';
+                    capturingDescription = false;
                 } else if (line.startsWith("Features:")) {
-                    inFeaturesSection = true; 
+                    currentKey = 'features';
+                    capturingDescription = false;
                 } else if (line.startsWith("SEO Keywords:")) {
                     details.keywords = line.replace("SEO Keywords:", "").trim();
-                    inFeaturesSection = false;
-                    if (currentFeatureBuffer.length > 0) {
-                        details.features = currentFeatureBuffer.join('\n');
-                        currentFeatureBuffer = [];
-                    }
+                    currentKey = 'keywords';
+                    capturingDescription = false;
                 } else if (line.startsWith("HSN Code:")) {
                     details.hsnCode = line.replace("HSN Code:", "").trim();
-                    inFeaturesSection = false;
-                } else if (inFeaturesSection && line.startsWith("- ")) {
-                    currentFeatureBuffer.push(line.replace("- ", "").trim());
-                } else if (inFeaturesSection && line.length > 0) {
-                     currentFeatureBuffer.push(line);
+                    currentKey = 'hsnCode';
+                    capturingDescription = false;
+                } else {
+                    // Capture multi-line text for features and description
+                    if (capturingDescription) {
+                        currentDescription.push(line);
+                    } else if (currentKey === 'features' && line.startsWith("- ")) {
+                        currentFeatures.push(line.replace("- ", "").trim());
+                    } else if (currentKey === 'features' && line.length > 0) {
+                        currentFeatures.push(line);
+                    } else {
+                        // Ignore other lines
+                    }
                 }
             }
-            if (currentFeatureBuffer.length > 0 && !details.features) {
-                details.features = currentFeatureBuffer.join('\n');
+        
+            if (currentFeatures.length > 0) {
+                details.features = currentFeatures.join('\n');
             }
+        
+            if (currentDescription.length > 0) {
+                details.description += '\n' + currentDescription.join('\n');
+            }
+        
             return details;
         }
 
@@ -426,7 +444,7 @@
                  
                  document.getElementById('title').value = productData.title || '';
                  document.getElementById('category').value = productData.category || '';
-                 document.getElementById('description').value = productData.description || ''; // Naya field
+                 document.getElementById('description').value = productData.description || '';
                  document.getElementById('features').value = productData.features || '';
                  document.getElementById('keywords').value = productData.keywords || '';
                  document.getElementById('material').value = productData.material || '';
@@ -473,7 +491,7 @@
                         height: document.getElementById('package-dimensions-height').value,
                         unit: document.getElementById('package-dimensions-unit').value
                     },
-                    packageItems: document.getElementById('package-items').value, // Naya field
+                    packageItems: document.getElementById('package-items').value,
                     stock: document.getElementById('stock').value,
                     returnPolicy: document.getElementById('return-policy').value
                 };
@@ -498,7 +516,7 @@
                 document.getElementById('review-images').innerHTML = productData.images.map(file => file ? `<img src="${URL.createObjectURL(file)}" class="w-full h-auto rounded-md object-cover">` : '').join('');
                 document.getElementById('review-title').textContent = productData.title;
                 document.getElementById('review-category').textContent = productData.category;
-                document.getElementById('review-description').textContent = productData.description; // Naya field
+                document.getElementById('review-description').textContent = productData.description;
                 document.getElementById('review-material').textContent = productData.material;
                 document.getElementById('review-color').textContent = productData.color;
                 document.getElementById('review-hsn-code').textContent = productData.hsnCode;
@@ -514,7 +532,7 @@
                 } else {
                     document.getElementById('review-package-dimensions').textContent = 'N/A';
                 }
-                document.getElementById('review-package-items').textContent = productData.packageItems || 'N/A'; // Naya field
+                document.getElementById('review-package-items').textContent = productData.packageItems || 'N/A';
 
                 document.getElementById('review-stock').textContent = `${productData.stock} units`;
                 document.getElementById('review-return-policy').textContent = productData.returnPolicy;
