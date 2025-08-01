@@ -130,7 +130,7 @@
                                     <div class="mrp-example mt-2" id="mrp-example-text"></div>
                                     <div class="ai-suggestion-box">
                                         <span class="text-2xl mr-3">💡</span>
-                                        <div><p class="font-semibold text-green-800">AI Price Suggestion</p><p class="text-sm text-green-700">To be competitive, we suggest a price around **₹1499**.</p></div>
+                                        <div><p class="font-semibold text-green-800">AI Price Suggestion</p><p class="text-sm text-green-700" id="ai-price-suggestion-text">To be competitive, we suggest a price around **₹1499**.</p></div>
                                     </div>
                                 </div>
                                 <details id="group-buy-details" class="space-y-4">
@@ -432,13 +432,28 @@
                     const data = await response.json();
                     const listingText = data.listing;
 
-                    document.getElementById('image-after').src = URL.createObjectURL(mainImageFile);
+                    // Yahan par polished image ka URL update kiya gaya hai
+                    document.getElementById('image-after').src = data.polishedImageUrl;
 
                     document.getElementById('ai-image-loader').style.display = 'none';
                     document.getElementById('ai-image-results').style.display = 'block';
 
                     const parsedDetails = parseListingText(listingText);
                     Object.assign(productData, parsedDetails);
+                    
+                    // AI suggestions ko form mein daalna
+                    if (productData.suggestedSellingPrice) {
+                        document.getElementById('ai-price-suggestion-text').innerHTML = `To be competitive, we suggest a price around **₹${productData.suggestedSellingPrice}**.`;
+                        document.getElementById('sellingPrice').value = productData.suggestedSellingPrice;
+                    }
+
+                    if (productData.estimatedProductWeight) {
+                        document.getElementById('product-weight').value = productData.estimatedProductWeight;
+                    }
+
+                    if (productData.estimatedPackageWeight) {
+                        document.getElementById('package-weight').value = productData.estimatedPackageWeight;
+                    }
 
                 } catch (error) {
                     console.error("Error during API call or processing:", error);
